@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Friday Clock-Out Calculator</title>
 
   <style>
@@ -24,7 +25,7 @@
       background: white;
       padding: 30px;
       border-radius: 14px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 18px rgba(0,0,0,.08);
     }
 
     h1 {
@@ -39,6 +40,72 @@
       margin-bottom: 25px;
     }
 
+    /* LOGIN */
+
+    #loginScreen {
+      max-width: 420px;
+      margin: 30px auto;
+    }
+
+    .login-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    .login-box h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .login-box label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    .login-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .login-buttons button {
+      flex: 1;
+    }
+
+    #loginMessage {
+      text-align: center;
+      margin-top: 15px;
+      color: #b91c1c;
+      min-height: 20px;
+    }
+
+    /* USER BAR */
+
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    /* ROUNDING INFO */
+
     .rounding-info {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -48,6 +115,8 @@
       font-size: 14px;
       text-align: center;
     }
+
+    /* TABLE */
 
     .table-wrapper {
       overflow-x: auto;
@@ -107,30 +176,38 @@
       white-space: nowrap;
     }
 
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    /* BUTTONS */
 
     button {
-      padding: 13px 20px;
-      font-size: 16px;
+      padding: 11px 18px;
+      font-size: 15px;
       font-weight: bold;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      background: #2563eb;
+      color: white;
     }
 
-    .clear-button {
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-button {
       background: #e2e8f0;
       color: #334155;
-      margin-left: auto;
     }
 
-    .clear-button:hover {
+    .secondary-button:hover {
       background: #cbd5e1;
     }
+
+    .clear-container {
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    /* RESULT */
 
     .result {
       margin-top: 25px;
@@ -160,6 +237,26 @@
       color: #334155;
     }
 
+    .error {
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+
+    .error .clockout {
+      color: #be123c;
+    }
+
+    .success {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .success .clockout {
+      color: #15803d;
+    }
+
+    /* SUMMARY */
+
     .weekly-summary {
       margin-top: 25px;
       padding: 18px;
@@ -182,32 +279,50 @@
       padding-top: 10px;
     }
 
-    .error {
-      background: #fff1f2;
-      border-color: #fecdd3;
+    /* PROGRESS */
+
+    .progress-container {
+      margin-top: 20px;
     }
 
-    .error .clockout {
-      color: #be123c;
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 6px;
     }
 
-    .success {
-      background: #f0fdf4;
-      border-color: #bbf7d0;
+    .progress-background {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 20px;
+      overflow: hidden;
     }
 
-    .success .clockout {
-      color: #15803d;
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #2563eb;
+      transition: width .3s ease;
     }
 
-    .save-message {
+    /* SAVE STATUS */
+
+    #saveStatus {
       text-align: center;
       color: #64748b;
       font-size: 12px;
-      margin-top: 10px;
+      margin-top: 15px;
+      min-height: 15px;
     }
 
-    @media (max-width: 700px) {
+    #calculator {
+      display: none;
+    }
+
+    @media(max-width:700px) {
+
       body {
         padding: 10px;
       }
@@ -224,13 +339,15 @@
         font-size: 34px;
       }
 
-      .buttons {
+      .user-bar {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .login-buttons {
         flex-direction: column;
       }
 
-      .clear-button {
-        margin-left: 0;
-      }
     }
   </style>
 </head>
@@ -241,263 +358,426 @@
 
   <h1>40 Hour Clock-Out Calculator</h1>
 
-  <p class="subtitle">
-    Enter your punches and your Friday clock-out time will update automatically.
-  </p>
+  <!-- LOGIN SCREEN -->
 
-  <div class="rounding-info">
-    Times round to the nearest 15 minutes.
-    Example:
-    <strong>8:07 → 8:00</strong>,
-    <strong>8:08 → 8:15</strong>,
-    <strong>8:22 → 8:15</strong>,
-    <strong>8:23 → 8:30</strong>.
-  </div>
+  <div id="loginScreen">
 
-  <div class="table-wrapper">
+    <div class="login-box">
 
-    <table>
+      <h2>Login</h2>
 
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Clock In</th>
-          <th>Lunch Start</th>
-          <th>Lunch End</th>
-          <th>Clock Out</th>
-          <th>Hours</th>
-        </tr>
-      </thead>
+      <label>Email</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="you@example.com"
+      >
 
-      <tbody>
+      <label>Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+      >
 
-        <tr>
-          <td class="day-name">Monday</td>
+      <div class="login-buttons">
 
-          <td>
-            <input type="time" id="monIn">
-            <span class="rounded" id="monInRounded"></span>
-          </td>
+        <button id="loginButton">
+          Log In
+        </button>
 
-          <td>
-            <input type="time" id="monLunchStart">
-            <span class="rounded" id="monLunchStartRounded"></span>
-          </td>
+        <button
+          id="createButton"
+          class="secondary-button"
+        >
+          Create Account
+        </button>
 
-          <td>
-            <input type="time" id="monLunchEnd">
-            <span class="rounded" id="monLunchEndRounded"></span>
-          </td>
+      </div>
 
-          <td>
-            <input type="time" id="monOut">
-            <span class="rounded" id="monOutRounded"></span>
-          </td>
+      <div id="loginMessage"></div>
 
-          <td class="hours" id="monHours">--</td>
-        </tr>
-
-
-        <tr>
-          <td class="day-name">Tuesday</td>
-
-          <td>
-            <input type="time" id="tueIn">
-            <span class="rounded" id="tueInRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="tueLunchStart">
-            <span class="rounded" id="tueLunchStartRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="tueLunchEnd">
-            <span class="rounded" id="tueLunchEndRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="tueOut">
-            <span class="rounded" id="tueOutRounded"></span>
-          </td>
-
-          <td class="hours" id="tueHours">--</td>
-        </tr>
-
-
-        <tr>
-          <td class="day-name">Wednesday</td>
-
-          <td>
-            <input type="time" id="wedIn">
-            <span class="rounded" id="wedInRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="wedLunchStart">
-            <span class="rounded" id="wedLunchStartRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="wedLunchEnd">
-            <span class="rounded" id="wedLunchEndRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="wedOut">
-            <span class="rounded" id="wedOutRounded"></span>
-          </td>
-
-          <td class="hours" id="wedHours">--</td>
-        </tr>
-
-
-        <tr>
-          <td class="day-name">Thursday</td>
-
-          <td>
-            <input type="time" id="thuIn">
-            <span class="rounded" id="thuInRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="thuLunchStart">
-            <span class="rounded" id="thuLunchStartRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="thuLunchEnd">
-            <span class="rounded" id="thuLunchEndRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="thuOut">
-            <span class="rounded" id="thuOutRounded"></span>
-          </td>
-
-          <td class="hours" id="thuHours">--</td>
-        </tr>
-
-
-        <tr class="friday">
-
-          <td class="day-name">Friday</td>
-
-          <td>
-            <input type="time" id="friIn">
-            <span class="rounded" id="friInRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="friLunchStart">
-            <span class="rounded" id="friLunchStartRounded"></span>
-          </td>
-
-          <td>
-            <input type="time" id="friLunchEnd">
-            <span class="rounded" id="friLunchEndRounded"></span>
-          </td>
-
-          <td>
-            <strong>Calculated</strong>
-          </td>
-
-          <td class="hours" id="friHours">--</td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
-
-
-  <div class="buttons">
-    <button class="clear-button" onclick="clearWeek()">
-      Clear Week
-    </button>
-  </div>
-
-
-  <div class="result" id="result">
-
-    <div class="result-title">
-      You need to clock out Friday at:
-    </div>
-
-    <div class="clockout" id="clockoutTime">
-      --
-    </div>
-
-    <div class="details" id="details"></div>
-
-  </div>
-
-
-  <div class="weekly-summary">
-
-    <div class="summary-row">
-      <span>Monday–Thursday:</span>
-      <strong id="mondayThursdaySummary">--</strong>
-    </div>
-
-    <div class="summary-row">
-      <span>Friday Required:</span>
-      <strong id="fridaySummary">--</strong>
-    </div>
-
-    <div class="summary-row total">
-      <span>Projected Week:</span>
-      <span id="weekSummary">--</span>
     </div>
 
   </div>
 
-  <div class="save-message">
-    Your times are automatically saved on this device.
+
+  <!-- CALCULATOR -->
+
+  <div id="calculator">
+
+    <div class="user-bar">
+
+      <div>
+        Logged in as
+        <strong id="userEmail"></strong>
+      </div>
+
+      <button
+        id="logoutButton"
+        class="secondary-button"
+      >
+        Log Out
+      </button>
+
+    </div>
+
+
+    <p class="subtitle">
+      Enter your punches and your Friday clock-out time
+      will update automatically.
+    </p>
+
+
+    <div class="rounding-info">
+
+      Times round to the nearest 15 minutes.
+
+      <strong>8:07 → 8:00</strong>,
+
+      <strong>8:08 → 8:15</strong>,
+
+      <strong>8:22 → 8:15</strong>,
+
+      <strong>8:23 → 8:30</strong>.
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Day</th>
+            <th>Clock In</th>
+            <th>Lunch Start</th>
+            <th>Lunch End</th>
+            <th>Clock Out</th>
+            <th>Hours</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="timeTable"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <div class="clear-container">
+
+      <button
+        id="clearButton"
+        class="secondary-button"
+      >
+        Clear Week
+      </button>
+
+    </div>
+
+
+    <div
+      class="result"
+      id="result"
+    >
+
+      <div class="result-title">
+        You need to clock out Friday at:
+      </div>
+
+      <div
+        class="clockout"
+        id="clockoutTime"
+      >
+        --
+      </div>
+
+      <div
+        class="details"
+        id="details"
+      ></div>
+
+    </div>
+
+
+    <div class="weekly-summary">
+
+      <div class="summary-row">
+
+        <span>Monday–Thursday:</span>
+
+        <strong id="mondayThursdaySummary">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="summary-row">
+
+        <span>Friday Required:</span>
+
+        <strong id="fridaySummary">
+          --
+        </strong>
+
+      </div>
+
+
+      <div class="summary-row total">
+
+        <span>Projected Week:</span>
+
+        <span id="weekSummary">
+          --
+        </span>
+
+      </div>
+
+
+      <div class="progress-container">
+
+        <div class="progress-label">
+
+          <span>Weekly Progress</span>
+
+          <span id="progressText">
+            0 / 40 hr
+          </span>
+
+        </div>
+
+        <div class="progress-background">
+
+          <div
+            class="progress-bar"
+            id="progressBar"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div id="saveStatus"></div>
+
   </div>
 
 </div>
 
 
-<script>
+<script type="module">
 
-const days = ["mon", "tue", "wed", "thu"];
+/* ==================================================
+   FIREBASE IMPORTS
+================================================== */
 
-const inputIds = [
-  "monIn",
-  "monLunchStart",
-  "monLunchEnd",
-  "monOut",
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
 
-  "tueIn",
-  "tueLunchStart",
-  "tueLunchEnd",
-  "tueOut",
 
-  "wedIn",
-  "wedLunchStart",
-  "wedLunchEnd",
-  "wedOut",
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 
-  "thuIn",
-  "thuLunchStart",
-  "thuLunchEnd",
-  "thuOut",
 
-  "friIn",
-  "friLunchStart",
-  "friLunchEnd"
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+
+/* ==================================================
+   FIREBASE CONFIG
+================================================== */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyAfQgEmdauuG1i5xWNQWAyLpq9NDW9q_1o",
+
+  authDomain:
+    "friday-clock-out.firebaseapp.com",
+
+  projectId:
+    "friday-clock-out",
+
+  storageBucket:
+    "friday-clock-out.firebasestorage.app",
+
+  messagingSenderId:
+    "52288421117",
+
+  appId:
+    "1:52288421117:web:59bb63114bc0e1f52e1294",
+
+  measurementId:
+    "G-3JSDX13DVJ"
+
+};
+
+
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
+
+
+/* ==================================================
+   VARIABLES
+================================================== */
+
+const days = [
+  {
+    prefix: "mon",
+    name: "Monday"
+  },
+  {
+    prefix: "tue",
+    name: "Tuesday"
+  },
+  {
+    prefix: "wed",
+    name: "Wednesday"
+  },
+  {
+    prefix: "thu",
+    name: "Thursday"
+  }
 ];
 
 
-/*
-==================================================
-TIME FUNCTIONS
-==================================================
-*/
+const inputIds = [];
 
+let loadingData = false;
+
+
+/* ==================================================
+   BUILD TABLE
+================================================== */
+
+function createTimeInput(id) {
+
+  inputIds.push(id);
+
+  return `
+    <input type="time" id="${id}">
+    <span
+      class="rounded"
+      id="${id}Rounded"
+    ></span>
+  `;
+
+}
+
+
+let tableHTML = "";
+
+
+days.forEach(day => {
+
+  tableHTML += `
+
+    <tr>
+
+      <td class="day-name">
+        ${day.name}
+      </td>
+
+      <td>
+        ${createTimeInput(day.prefix + "In")}
+      </td>
+
+      <td>
+        ${createTimeInput(day.prefix + "LunchStart")}
+      </td>
+
+      <td>
+        ${createTimeInput(day.prefix + "LunchEnd")}
+      </td>
+
+      <td>
+        ${createTimeInput(day.prefix + "Out")}
+      </td>
+
+      <td
+        class="hours"
+        id="${day.prefix}Hours"
+      >
+        --
+      </td>
+
+    </tr>
+
+  `;
+
+});
+
+
+tableHTML += `
+
+  <tr class="friday">
+
+    <td class="day-name">
+      Friday
+    </td>
+
+    <td>
+      ${createTimeInput("friIn")}
+    </td>
+
+    <td>
+      ${createTimeInput("friLunchStart")}
+    </td>
+
+    <td>
+      ${createTimeInput("friLunchEnd")}
+    </td>
+
+    <td>
+      <strong>Calculated</strong>
+    </td>
+
+    <td
+      class="hours"
+      id="friHours"
+    >
+      --
+    </td>
+
+  </tr>
+
+`;
+
+
+document.getElementById(
+  "timeTable"
+).innerHTML = tableHTML;
+
+
+/* ==================================================
+   TIME FUNCTIONS
+================================================== */
 
 function timeToMinutes(time) {
 
@@ -505,43 +785,64 @@ function timeToMinutes(time) {
     return null;
   }
 
-  const [hours, minutes] = time.split(":").map(Number);
+  const parts =
+    time.split(":").map(Number);
 
-  return (hours * 60) + minutes;
+  return (
+    parts[0] * 60 +
+    parts[1]
+  );
 
 }
 
 
 function roundToQuarter(minutes) {
 
-  return Math.round(minutes / 15) * 15;
+  return (
+    Math.round(minutes / 15) * 15
+  );
 
 }
 
 
 function formatTime(totalMinutes) {
 
-  totalMinutes = totalMinutes % 1440;
+  totalMinutes =
+    totalMinutes % 1440;
 
   if (totalMinutes < 0) {
+
     totalMinutes += 1440;
+
   }
 
-  let hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
 
-  const period = hours >= 12 ? "PM" : "AM";
+  let hours =
+    Math.floor(totalMinutes / 60);
 
-  let displayHour = hours % 12;
+  const minutes =
+    totalMinutes % 60;
+
+
+  const period =
+    hours >= 12 ? "PM" : "AM";
+
+
+  let displayHour =
+    hours % 12;
+
 
   if (displayHour === 0) {
+
     displayHour = 12;
+
   }
+
 
   return (
     displayHour +
     ":" +
-    minutes.toString().padStart(2, "0") +
+    minutes.toString().padStart(2,"0") +
     " " +
     period
   );
@@ -551,90 +852,114 @@ function formatTime(totalMinutes) {
 
 function formatHours(minutes) {
 
-  if (minutes === null || isNaN(minutes)) {
+  if (
+    minutes === null ||
+    isNaN(minutes)
+  ) {
+
     return "--";
+
   }
 
-  const hours = Math.floor(minutes / 60);
 
-  const remainingMinutes = minutes % 60;
+  const hours =
+    Math.floor(minutes / 60);
 
-  if (remainingMinutes === 0) {
+  const remaining =
+    minutes % 60;
+
+
+  if (remaining === 0) {
+
     return hours + " hr";
+
   }
 
-  return hours + " hr " + remainingMinutes + " min";
+
+  return (
+    hours +
+    " hr " +
+    remaining +
+    " min"
+  );
 
 }
 
 
-/*
-==================================================
-ROUNDING DISPLAY
-==================================================
-*/
+/* ==================================================
+   ROUNDING DISPLAY
+================================================== */
 
-
-function updateRoundedDisplay(inputId) {
+function updateRoundedDisplay(id) {
 
   const input =
-    document.getElementById(inputId);
+    document.getElementById(id);
 
   const display =
-    document.getElementById(inputId + "Rounded");
+    document.getElementById(
+      id + "Rounded"
+    );
 
-  if (!display) {
-    return;
-  }
 
   if (!input.value) {
 
     display.textContent = "";
 
     return;
+
   }
 
-  const rawMinutes =
+
+  const raw =
     timeToMinutes(input.value);
 
-  const roundedMinutes =
-    roundToQuarter(rawMinutes);
+  const rounded =
+    roundToQuarter(raw);
+
 
   display.textContent =
-    formatTime(rawMinutes) +
+    formatTime(raw) +
     " → " +
-    formatTime(roundedMinutes);
+    formatTime(rounded);
 
 }
 
 
-/*
-==================================================
-CALCULATE ONE DAY
-==================================================
-*/
-
+/* ==================================================
+   DAY CALCULATION
+================================================== */
 
 function calculateDay(prefix) {
 
   const clockIn =
     timeToMinutes(
-      document.getElementById(prefix + "In").value
+      document.getElementById(
+        prefix + "In"
+      ).value
     );
+
 
   const lunchStart =
     timeToMinutes(
-      document.getElementById(prefix + "LunchStart").value
+      document.getElementById(
+        prefix + "LunchStart"
+      ).value
     );
+
 
   const lunchEnd =
     timeToMinutes(
-      document.getElementById(prefix + "LunchEnd").value
+      document.getElementById(
+        prefix + "LunchEnd"
+      ).value
     );
+
 
   const clockOut =
     timeToMinutes(
-      document.getElementById(prefix + "Out").value
+      document.getElementById(
+        prefix + "Out"
+      ).value
     );
 
 
@@ -674,108 +999,80 @@ function calculateDay(prefix) {
   }
 
 
-  const morning =
-    roundedLunchStart - roundedIn;
-
-  const afternoon =
-    roundedOut - roundedLunchEnd;
-
-
-  return morning + afternoon;
+  return (
+    roundedLunchStart -
+    roundedIn +
+    roundedOut -
+    roundedLunchEnd
+  );
 
 }
 
 
-/*
-==================================================
-MAIN CALCULATION
-==================================================
-*/
-
+/* ==================================================
+   CALCULATOR
+================================================== */
 
 function calculateClockOut() {
 
-  let mondayThursdayMinutes = 0;
+  let monThu = 0;
 
-  let allWeekdaysComplete = true;
+  let complete = true;
 
-  let hasInvalidDay = false;
-
-
-  /*
-  MONDAY - THURSDAY
-  */
-
-  for (const day of days) {
-
-    const workedMinutes =
-      calculateDay(day);
-
-    const hoursDisplay =
-      document.getElementById(day + "Hours");
+  let invalid = false;
 
 
-    if (workedMinutes === null) {
+  days.forEach(day => {
 
-      allWeekdaysComplete = false;
+    const worked =
+      calculateDay(day.prefix);
 
-      hoursDisplay.textContent = "--";
 
-      continue;
+    if (worked === null) {
+
+      complete = false;
+
+      document.getElementById(
+        day.prefix + "Hours"
+      ).textContent = "--";
+
+      return;
 
     }
 
 
-    if (workedMinutes === "invalid") {
+    if (worked === "invalid") {
 
-      hasInvalidDay = true;
+      invalid = true;
 
-      hoursDisplay.textContent = "Invalid";
+      document.getElementById(
+        day.prefix + "Hours"
+      ).textContent = "Invalid";
 
-      continue;
+      return;
 
     }
 
 
-    mondayThursdayMinutes +=
-      workedMinutes;
+    monThu += worked;
 
-    hoursDisplay.textContent =
-      formatHours(workedMinutes);
-
-  }
-
-
-  /*
-  SUMMARY OF MON-THU
-  */
-
-  if (allWeekdaysComplete && !hasInvalidDay) {
 
     document.getElementById(
-      "mondayThursdaySummary"
+      day.prefix + "Hours"
     ).textContent =
-      formatHours(mondayThursdayMinutes);
+      formatHours(worked);
 
-  } else {
+  });
+
+
+  updateProgress(monThu);
+
+
+  if (!complete || invalid) {
 
     document.getElementById(
       "mondayThursdaySummary"
     ).textContent = "--";
-
-  }
-
-
-  /*
-  HIDE RESULT UNTIL MON-THU IS COMPLETE
-  */
-
-  if (
-    !allWeekdaysComplete ||
-    hasInvalidDay
-  ) {
-
-    hideResult();
 
     document.getElementById(
       "fridaySummary"
@@ -785,28 +1082,40 @@ function calculateClockOut() {
       "weekSummary"
     ).textContent = "--";
 
+    document.getElementById(
+      "friHours"
+    ).textContent = "--";
+
+    hideResult();
+
     return;
 
   }
 
 
-  /*
-  FRIDAY TIMES
-  */
+  document.getElementById(
+    "mondayThursdaySummary"
+  ).textContent =
+    formatHours(monThu);
 
-  const fridayInRaw =
+
+  const friInRaw =
     timeToMinutes(
-      document.getElementById("friIn").value
+      document.getElementById(
+        "friIn"
+      ).value
     );
 
-  const fridayLunchStartRaw =
+
+  const friLunchStartRaw =
     timeToMinutes(
       document.getElementById(
         "friLunchStart"
       ).value
     );
 
-  const fridayLunchEndRaw =
+
+  const friLunchEndRaw =
     timeToMinutes(
       document.getElementById(
         "friLunchEnd"
@@ -815,9 +1124,9 @@ function calculateClockOut() {
 
 
   if (
-    fridayInRaw === null ||
-    fridayLunchStartRaw === null ||
-    fridayLunchEndRaw === null
+    friInRaw === null ||
+    friLunchStartRaw === null ||
+    friLunchEndRaw === null
   ) {
 
     hideResult();
@@ -839,27 +1148,23 @@ function calculateClockOut() {
   }
 
 
-  /*
-  ROUND FRIDAY TIMES
-  */
+  const friIn =
+    roundToQuarter(friInRaw);
 
-  const fridayIn =
-    roundToQuarter(fridayInRaw);
+  const friLunchStart =
+    roundToQuarter(
+      friLunchStartRaw
+    );
 
-  const fridayLunchStart =
-    roundToQuarter(fridayLunchStartRaw);
+  const friLunchEnd =
+    roundToQuarter(
+      friLunchEndRaw
+    );
 
-  const fridayLunchEnd =
-    roundToQuarter(fridayLunchEndRaw);
-
-
-  /*
-  VALIDATE FRIDAY TIMES
-  */
 
   if (
-    fridayLunchStart < fridayIn ||
-    fridayLunchEnd < fridayLunchStart
+    friLunchStart < friIn ||
+    friLunchEnd < friLunchStart
   ) {
 
     showError(
@@ -871,37 +1176,26 @@ function calculateClockOut() {
   }
 
 
-  /*
-  FRIDAY MORNING HOURS
-  */
-
   const fridayMorning =
-    fridayLunchStart - fridayIn;
+    friLunchStart - friIn;
 
 
-  /*
-  WEEKLY TARGET
-  */
-
-  const targetMinutes =
+  const target =
     40 * 60;
 
 
-  /*
-  HOW MANY MINUTES ARE LEFT?
-  */
-
-  const minutesNeededAfterLunch =
-    targetMinutes -
-    mondayThursdayMinutes -
+  const neededAfterLunch =
+    target -
+    monThu -
     fridayMorning;
 
 
-  /*
-  ALREADY AT 40 HOURS
-  */
+  if (neededAfterLunch <= 0) {
 
-  if (minutesNeededAfterLunch <= 0) {
+    const currentTotal =
+      monThu +
+      fridayMorning;
+
 
     document.getElementById(
       "friHours"
@@ -915,16 +1209,13 @@ function calculateClockOut() {
       formatHours(fridayMorning);
 
 
-    const total =
-      mondayThursdayMinutes +
-      fridayMorning;
-
-
     document.getElementById(
       "weekSummary"
     ).textContent =
-      formatHours(total);
+      formatHours(currentTotal);
 
+
+    updateProgress(currentTotal);
 
     showAlreadyDone();
 
@@ -933,48 +1224,31 @@ function calculateClockOut() {
   }
 
 
-  /*
-  CALCULATE CLOCK OUT
-  */
-
   let requiredClockOut =
-    fridayLunchEnd +
-    minutesNeededAfterLunch;
+    friLunchEnd +
+    neededAfterLunch;
 
-
-  /*
-  ENSURE CLOCK OUT IS A 15 MINUTE INCREMENT
-  */
 
   requiredClockOut =
-    Math.ceil(requiredClockOut / 15) * 15;
+    Math.ceil(
+      requiredClockOut / 15
+    ) * 15;
 
-
-  /*
-  TOTAL FRIDAY HOURS
-  */
 
   const fridayAfternoon =
     requiredClockOut -
-    fridayLunchEnd;
+    friLunchEnd;
+
 
   const fridayWorked =
     fridayMorning +
     fridayAfternoon;
 
 
-  /*
-  PROJECTED WEEK TOTAL
-  */
-
-  const projectedWeek =
-    mondayThursdayMinutes +
+  const week =
+    monThu +
     fridayWorked;
 
-
-  /*
-  DISPLAY RESULTS
-  */
 
   document.getElementById(
     "friHours"
@@ -991,14 +1265,19 @@ function calculateClockOut() {
   document.getElementById(
     "weekSummary"
   ).textContent =
-    formatHours(projectedWeek);
+    formatHours(week);
 
 
-  const resultBox =
-    document.getElementById("result");
+  updateProgress(week);
 
 
-  resultBox.classList.remove(
+  const box =
+    document.getElementById(
+      "result"
+    );
+
+
+  box.classList.remove(
     "error",
     "success"
   );
@@ -1015,7 +1294,7 @@ function calculateClockOut() {
   ).innerHTML =
 
     "<strong>Monday–Thursday:</strong> " +
-    formatHours(mondayThursdayMinutes) +
+    formatHours(monThu) +
     "<br>" +
 
     "<strong>Friday morning:</strong> " +
@@ -1031,77 +1310,124 @@ function calculateClockOut() {
     "<br>" +
 
     "<strong>Projected weekly total:</strong> " +
-    formatHours(projectedWeek);
+    formatHours(week);
 
 
-  resultBox.style.display = "block";
+  box.style.display =
+    "block";
 
 }
 
 
-/*
-==================================================
-RESULT DISPLAY
-==================================================
-*/
+/* ==================================================
+   PROGRESS BAR
+================================================== */
 
+function updateProgress(minutes) {
+
+  const hours =
+    minutes / 60;
+
+
+  const percent =
+    Math.min(
+      (minutes / 2400) * 100,
+      100
+    );
+
+
+  document.getElementById(
+    "progressBar"
+  ).style.width =
+    percent + "%";
+
+
+  document.getElementById(
+    "progressText"
+  ).textContent =
+    hours.toFixed(2) +
+    " / 40 hr";
+
+}
+
+
+/* ==================================================
+   RESULT HELPERS
+================================================== */
 
 function hideResult() {
 
   document.getElementById(
     "result"
-  ).style.display = "none";
+  ).style.display =
+    "none";
 
 }
 
 
 function showError(message) {
 
-  const resultBox =
-    document.getElementById("result");
+  const box =
+    document.getElementById(
+      "result"
+    );
 
-  resultBox.style.display =
+
+  box.style.display =
     "block";
 
-  resultBox.classList.remove(
+
+  box.classList.remove(
     "success"
   );
 
-  resultBox.classList.add(
+
+  box.classList.add(
     "error"
   );
 
+
   document.getElementById(
     "clockoutTime"
-  ).textContent = "Check Times";
+  ).textContent =
+    "Check Times";
+
 
   document.getElementById(
     "details"
-  ).textContent = message;
+  ).textContent =
+    message;
 
 }
 
 
 function showAlreadyDone() {
 
-  const resultBox =
-    document.getElementById("result");
+  const box =
+    document.getElementById(
+      "result"
+    );
 
-  resultBox.style.display =
+
+  box.style.display =
     "block";
 
-  resultBox.classList.remove(
+
+  box.classList.remove(
     "error"
   );
 
-  resultBox.classList.add(
+
+  box.classList.add(
     "success"
   );
+
 
   document.getElementById(
     "clockoutTime"
   ).textContent =
     "40 Hours Reached";
+
 
   document.getElementById(
     "details"
@@ -1111,176 +1437,445 @@ function showAlreadyDone() {
 }
 
 
-/*
-==================================================
-LOCAL STORAGE
-==================================================
-*/
+/* ==================================================
+   FIRESTORE SAVE
+================================================== */
+
+async function saveTimes() {
+
+  if (
+    loadingData ||
+    !auth.currentUser
+  ) {
+
+    return;
+
+  }
 
 
-function saveTimes() {
+  const data = {};
 
-  const savedTimes = {};
 
   inputIds.forEach(id => {
 
-    savedTimes[id] =
-      document.getElementById(id).value;
+    data[id] =
+      document.getElementById(
+        id
+      ).value;
 
   });
 
 
-  localStorage.setItem(
-    "workWeekTimes",
-    JSON.stringify(savedTimes)
-  );
+  data.updatedAt =
+    new Date().toISOString();
+
+
+  const status =
+    document.getElementById(
+      "saveStatus"
+    );
+
+
+  status.textContent =
+    "Saving...";
+
+
+  try {
+
+    await setDoc(
+      doc(
+        db,
+        "users",
+        auth.currentUser.uid
+      ),
+      data
+    );
+
+
+    status.textContent =
+      "Saved to cloud";
+
+  }
+
+  catch(error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Could not save";
+
+  }
 
 }
 
 
-function loadTimes() {
+/* ==================================================
+   FIRESTORE LOAD
+================================================== */
 
-  const saved =
-    localStorage.getItem(
-      "workWeekTimes"
-    );
+async function loadTimes() {
 
-
-  if (!saved) {
+  if (!auth.currentUser) {
     return;
+  }
+
+
+  loadingData = true;
+
+
+  try {
+
+    const snapshot =
+      await getDoc(
+        doc(
+          db,
+          "users",
+          auth.currentUser.uid
+        )
+      );
+
+
+    if (snapshot.exists()) {
+
+      const data =
+        snapshot.data();
+
+
+      inputIds.forEach(id => {
+
+        document.getElementById(
+          id
+        ).value =
+          data[id] || "";
+
+      });
+
+    }
+
+
+    inputIds.forEach(id => {
+
+      updateRoundedDisplay(id);
+
+    });
+
+
+    calculateClockOut();
+
+  }
+
+  catch(error) {
+
+    console.error(error);
+
+    document.getElementById(
+      "saveStatus"
+    ).textContent =
+      "Could not load cloud data";
+
+  }
+
+
+  loadingData = false;
+
+}
+
+
+/* ==================================================
+   CLEAR WEEK
+================================================== */
+
+async function clearWeek() {
+
+  if (
+    !confirm(
+      "Clear all saved times for this week?"
+    )
+  ) {
+
+    return;
+
   }
 
 
   try {
 
-    const savedTimes =
-      JSON.parse(saved);
+    if (auth.currentUser) {
+
+      await deleteDoc(
+        doc(
+          db,
+          "users",
+          auth.currentUser.uid
+        )
+      );
+
+    }
 
 
     inputIds.forEach(id => {
 
-      if (savedTimes[id]) {
-
-        document.getElementById(id).value =
-          savedTimes[id];
-
-      }
-
-    });
-
-  } catch (error) {
-
-    console.error(
-      "Could not load saved times.",
-      error
-    );
-
-  }
-
-}
-
-
-/*
-==================================================
-CLEAR WEEK
-==================================================
-*/
-
-
-function clearWeek() {
-
-  const confirmed =
-    confirm(
-      "Clear all saved times for this week?"
-    );
-
-
-  if (!confirmed) {
-    return;
-  }
-
-
-  inputIds.forEach(id => {
-
-    document.getElementById(id).value =
-      "";
-
-    const roundedDisplay =
       document.getElementById(
-        id + "Rounded"
-      );
+        id
+      ).value = "";
 
-    if (roundedDisplay) {
-
-      roundedDisplay.textContent =
-        "";
-
-    }
-
-  });
-
-
-  days.forEach(day => {
-
-    document.getElementById(
-      day + "Hours"
-    ).textContent = "--";
-
-  });
-
-
-  document.getElementById(
-    "friHours"
-  ).textContent = "--";
-
-
-  document.getElementById(
-    "mondayThursdaySummary"
-  ).textContent = "--";
-
-
-  document.getElementById(
-    "fridaySummary"
-  ).textContent = "--";
-
-
-  document.getElementById(
-    "weekSummary"
-  ).textContent = "--";
-
-
-  localStorage.removeItem(
-    "workWeekTimes"
-  );
-
-
-  hideResult();
-
-}
-
-
-/*
-==================================================
-EVENT LISTENERS
-==================================================
-*/
-
-
-inputIds.forEach(id => {
-
-  const input =
-    document.getElementById(id);
-
-
-  input.addEventListener(
-    "input",
-    function () {
 
       updateRoundedDisplay(id);
 
-      saveTimes();
+    });
+
+
+    days.forEach(day => {
+
+      document.getElementById(
+        day.prefix + "Hours"
+      ).textContent = "--";
+
+    });
+
+
+    document.getElementById(
+      "friHours"
+    ).textContent = "--";
+
+
+    document.getElementById(
+      "mondayThursdaySummary"
+    ).textContent = "--";
+
+
+    document.getElementById(
+      "fridaySummary"
+    ).textContent = "--";
+
+
+    document.getElementById(
+      "weekSummary"
+    ).textContent = "--";
+
+
+    updateProgress(0);
+
+    hideResult();
+
+
+    document.getElementById(
+      "saveStatus"
+    ).textContent =
+      "Week cleared";
+
+  }
+
+  catch(error) {
+
+    console.error(error);
+
+    alert(
+      "There was a problem clearing your week."
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   LOGIN
+================================================== */
+
+async function login() {
+
+  const email =
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+
+  const password =
+    document.getElementById(
+      "password"
+    ).value;
+
+
+  const message =
+    document.getElementById(
+      "loginMessage"
+    );
+
+
+  message.textContent = "";
+
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(error);
+
+    message.textContent =
+      friendlyAuthError(error.code);
+
+  }
+
+}
+
+
+/* ==================================================
+   CREATE ACCOUNT
+================================================== */
+
+async function createAccount() {
+
+  const email =
+    document.getElementById(
+      "email"
+    ).value.trim();
+
+
+  const password =
+    document.getElementById(
+      "password"
+    ).value;
+
+
+  const message =
+    document.getElementById(
+      "loginMessage"
+    );
+
+
+  message.textContent = "";
+
+
+  try {
+
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(error);
+
+    message.textContent =
+      friendlyAuthError(error.code);
+
+  }
+
+}
+
+
+/* ==================================================
+   AUTH ERROR MESSAGES
+================================================== */
+
+function friendlyAuthError(code) {
+
+  switch(code) {
+
+    case "auth/invalid-email":
+      return "Enter a valid email address.";
+
+    case "auth/missing-password":
+      return "Enter a password.";
+
+    case "auth/weak-password":
+      return "Password must be at least 6 characters.";
+
+    case "auth/email-already-in-use":
+      return "An account already exists with that email.";
+
+    case "auth/invalid-credential":
+      return "Incorrect email or password.";
+
+    default:
+      return "Unable to sign in. Please try again.";
+
+  }
+
+}
+
+
+/* ==================================================
+   AUTH STATE
+================================================== */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    if (user) {
+
+      document.getElementById(
+        "loginScreen"
+      ).style.display =
+        "none";
+
+
+      document.getElementById(
+        "calculator"
+      ).style.display =
+        "block";
+
+
+      document.getElementById(
+        "userEmail"
+      ).textContent =
+        user.email;
+
+
+      await loadTimes();
+
+    }
+
+    else {
+
+      document.getElementById(
+        "loginScreen"
+      ).style.display =
+        "block";
+
+
+      document.getElementById(
+        "calculator"
+      ).style.display =
+        "none";
+
+    }
+
+  }
+);
+
+
+/* ==================================================
+   EVENT LISTENERS
+================================================== */
+
+inputIds.forEach(id => {
+
+  document.getElementById(
+    id
+  ).addEventListener(
+    "input",
+    async () => {
+
+      updateRoundedDisplay(id);
 
       calculateClockOut();
+
+      await saveTimes();
 
     }
   );
@@ -1288,24 +1883,54 @@ inputIds.forEach(id => {
 });
 
 
-/*
-==================================================
-PAGE STARTUP
-==================================================
-*/
+document.getElementById(
+  "loginButton"
+).addEventListener(
+  "click",
+  login
+);
 
 
-loadTimes();
+document.getElementById(
+  "createButton"
+).addEventListener(
+  "click",
+  createAccount
+);
 
 
-inputIds.forEach(id => {
+document.getElementById(
+  "logoutButton"
+).addEventListener(
+  "click",
+  () => signOut(auth)
+);
 
-  updateRoundedDisplay(id);
 
-});
+document.getElementById(
+  "clearButton"
+).addEventListener(
+  "click",
+  clearWeek
+);
 
 
-calculateClockOut();
+/* Allow Enter to log in */
+
+document.getElementById(
+  "password"
+).addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Enter") {
+
+      login();
+
+    }
+
+  }
+);
 
 </script>
 
